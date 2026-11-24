@@ -1,7 +1,11 @@
 # Entorno para correr TP_2/TP-clasificacion-AA1.ipynb (probado con Python 3.10 en Windows).
 # PyCaret 3.3.2 instala versiones anteriores de pandas, numpy, scikit-learn y matplotlib.
 # LightGBM queda en 4.5.0: con 4.7.0 el entrenamiento falla en Windows y PyCaret lo descarta sin avisar.
+# TensorFlow queda en 2.17.1: desde 2.18 no carga en Windows si antes se importó scikit-learn 1.4.2,
+# que trae una versión vieja de msvcp140.dll.
 pycaret==3.3.2
 shap==0.49.1
 lightgbm==4.5.0
+tensorflow==2.17.1
+optuna==5.1.0
 ipykernel
