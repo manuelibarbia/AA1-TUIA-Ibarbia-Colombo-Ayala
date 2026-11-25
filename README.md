@@ -13,7 +13,13 @@ AA1-TUIA-Ibarbia-Colombo-Ayala/
 │   └── TP-regresion-AA1.ipynb                 # Trabajo Práctico 1: Regresión Lineal
 └── TP_2/
     ├── TP-clasificacion-AA1.ipynb             # Trabajo Práctico 2: Clasificación
-    └── requirements.txt                       # Entorno para correr el notebook del TP 2
+    ├── requirements.txt                       # Entorno para correr el notebook del TP 2
+    └── docker/                                # Inferencia del modelo seleccionado
+        ├── Dockerfile
+        ├── README.md
+        ├── inferencia.py
+        ├── requirements.txt                   # Dependencias mínimas de inferencia
+        └── modelo/                            # Artefactos exportados desde el notebook
 ```
 
 ## Cómo correr los notebooks
@@ -72,6 +78,12 @@ jupyter nbconvert --to notebook --execute TP_1/TP-regresion-AA1.ipynb --output T
 El dataset `house-prices-tp.csv` está disponible en la raíz del repositorio. La carga local es la opción
 principal para que el trabajo sea reproducible; la URL de GitHub queda únicamente como respaldo si se
 ejecuta el notebook fuera del repositorio.
+
+### Inferencia del TP 2 con Docker
+
+La API, su contrato de entrada y salida y los pasos para construir y ejecutar el contenedor están en
+TP_2/docker/README.md. Antes de construir la imagen, hay que generar red_optimizada.keras y
+preprocesador.joblib con la celda de exportación del ítem 9 del notebook.
 
 ### Entrega
 
