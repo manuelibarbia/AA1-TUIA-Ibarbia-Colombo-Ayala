@@ -82,8 +82,8 @@ ejecuta el notebook fuera del repositorio.
 ### Inferencia del TP 2 con Docker
 
 La API, su contrato de entrada y salida y los pasos para construir y ejecutar el contenedor están en
-TP_2/docker/README.md. Antes de construir la imagen, hay que generar red_optimizada.keras y
-preprocesador.joblib con la celda de exportación del ítem 9 del notebook.
+TP_2/docker/README.md. La carpeta TP_2/docker/modelo ya incluye y versiona red_optimizada.keras y
+preprocesador.joblib; no hace falta ejecutar la celda de exportación para construir la imagen.
 
 ### Entrega
 

@@ -12,7 +12,7 @@ RUN python -m pip install --no-cache-dir --upgrade pip \
     && python -m pip install --no-cache-dir -r requirements.txt
 
 COPY inferencia.py .
-COPY modelo/ ./modelo/
+COPY modelo/red_optimizada.keras modelo/preprocesador.joblib ./modelo/
 RUN test -s modelo/red_optimizada.keras \
     && test -s modelo/preprocesador.joblib \
     && useradd --system --uid 10001 app \

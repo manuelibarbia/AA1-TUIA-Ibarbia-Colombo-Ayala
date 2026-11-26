@@ -161,7 +161,7 @@ def cargar_recursos():
         raise FileNotFoundError(
             "Faltan los artefactos del modelo: "
             + ", ".join(faltan)
-            + ". Genérelos con la celda de exportación del ítem 9 antes de construir la imagen."
+            + ". Incluya los archivos versionados de modelo/ antes de iniciar la API."
         )
 
     import tensorflow as tf

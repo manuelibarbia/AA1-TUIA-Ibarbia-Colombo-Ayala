@@ -1,35 +1,44 @@
 # Inferencia del modelo de lluvia
 
-Este servicio carga la red neuronal optimizada del ítem 8 y su ColumnTransformer. Recibe las condiciones meteorológicas observadas durante el día y predice RainTomorrow. No usa RainTomorrow ni RainfallTomorrow como entrada.
+Este servicio carga la red neuronal optimizada del ítem 8 y su `ColumnTransformer`. Recibe las condiciones meteorológicas observadas durante el día y predice `RainTomorrow`. No usa `RainTomorrow` ni `RainfallTomorrow` como entrada.
 
 ## Artefactos
 
-Antes de construir la imagen deben existir estos dos archivos dentro de modelo/:
+Los dos artefactos requeridos ya están incluidos y versionados en `modelo/`:
 
-- red_optimizada.keras: pesos de la red elegida.
-- preprocesador.joblib: escaladores, imputadores y codificador ajustados solo con entrenamiento.
+- `red_optimizada.keras` (73.883 bytes): pesos de la red elegida.
+- `preprocesador.joblib` (2.147 bytes): escaladores, imputadores y codificador ajustados solo con entrenamiento.
 
-Se generan desde la celda de exportación al final del ítem 9 del notebook, con los objetos entrenados en memoria. No se deben volver a ajustar al preparar la inferencia. En este checkout todavía no están generados: no había artefactos serializados y no se ejecutó el notebook para conservar sus resultados guardados.
-
-La inferencia fija el umbral en 0.163, elegido con el índice de Youden sobre validación en el ítem 7. La clase positiva es Yes.
+La celda de exportación del ítem 9 muestra cómo serializar los objetos ya ajustados. No hace falta ejecutar el notebook para construir la imagen ni volver a ajustar el preprocesador. El umbral de inferencia es 0,163, elegido con el índice de Youden sobre validación en el ítem 7. La clase positiva es `Yes`.
 
 ## Construir y ejecutar
 
-Desde esta carpeta, después de generar los dos artefactos:
+Desde esta carpeta:
 
 ~~~sh
-docker build -t aa1-lluvia .
-docker run --rm -p 8000:8000 aa1-lluvia
+docker build --progress=plain -t aa1-lluvia .
+docker run -d --name aa1-lluvia -p 8000:8000 aa1-lluvia:latest
 ~~~
 
-La imagen contiene únicamente el servicio, sus dependencias y los artefactos; no incluye el dataset ni el notebook. El contenedor escucha en el puerto 8000.
+La imagen contiene el servicio, sus dependencias y los artefactos; no incluye el dataset ni el notebook. El Dockerfile valida que los dos artefactos estén presentes y no vacíos. El contenedor escucha en el puerto 8000 y corre con un usuario no privilegiado.
+
+Comprobá que el servicio terminó de cargar los recursos y consultá sus logs:
+
+~~~sh
+curl -i http://localhost:8000/health
+docker logs aa1-lluvia
+~~~
+
+`GET /health` devuelve HTTP 200 y `{"estado":"listo"}` cuando el proceso está activo. Para detener el contenedor al terminar, usá `docker stop aa1-lluvia`.
 
 ## API
 
-- GET /health: comprueba que el servicio está activo.
-- POST /predict: recibe una observación en JSON y devuelve la probabilidad de lluvia para el día siguiente, la clase predicha y el umbral aplicado.
+- `GET /health`: comprueba que el servicio está activo.
+- `POST /predict`: recibe una observación en JSON y devuelve la probabilidad de lluvia para el día siguiente, la clase predicha y el umbral aplicado.
 
-La solicitud incluye Date con formato YYYY-MM-DD, Location, RainToday, las 16 variables numéricas y las tres direcciones del viento. Los faltantes se envían como null; la fecha y la estación son obligatorias. Las ubicaciones y direcciones aceptadas son las del dataset.
+La solicitud incluye `Date` con formato `YYYY-MM-DD`, `Location`, `RainToday`, las 16 variables numéricas y las tres direcciones del viento. Los faltantes se envían como `null`; la fecha y la estación son obligatorias. Las ubicaciones y direcciones aceptadas son las del dataset.
+
+Ejemplo:
 
 ~~~sh
 curl -X POST http://localhost:8000/predict \
@@ -60,7 +69,7 @@ curl -X POST http://localhost:8000/predict \
   }'
 ~~~
 
-Respuesta ilustrativa:
+La respuesta tiene esta forma:
 
 ~~~json
 {
@@ -70,4 +79,4 @@ Respuesta ilustrativa:
 }
 ~~~
 
-Los valores de respuesta son ilustrativos. La decisión devuelve Yes cuando la probabilidad alcanza o supera el umbral.
+La probabilidad del ejemplo es ilustrativa. La decisión devuelve `Yes` cuando la probabilidad alcanza o supera el umbral.
